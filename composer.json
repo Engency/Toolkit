@@ -1,0 +1,31 @@
+{
+  "name": "Engency/toolkit",
+  "type": "library",
+  "description": "The Engency toolkit",
+  "keywords": [],
+  "homepage": "https://www.engency.com",
+  "support": {
+    "issues": "https://github.com/Engency/toolkit/issues",
+    "source": "https://github.com/Engency/toolkit"
+  },
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Frank Kuipers",
+      "email": "frank@engency.com",
+      "homepage": "https://www.engency.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "bin": [
+    "bin/docker_inject",
+    "bin/install_commands",
+    "bin/root_scripts",
+    "bin/upgrade_service"
+  ],
+  "require": {},
+  "require-dev": {},
+  "autoload": {},
+  "autoload-dev": {},
+  "config": {}
+}

@@ -1,0 +1,73 @@
+#!/bin/bash
+
+toolkitDir=$(dirname $0)/vendor/Engency/toolkit
+
+if [[ $(whoami) != "root" ]]; then
+    echo 'Not logged in as root. This script needs elevated permissions. Aborting...'
+    exit
+fi
+
+cleanup()
+{
+    echo 'Cleaning up docker'
+    docker system prune -f
+
+    return 0
+}
+
+remove_dangling_builds()
+{
+    liveBuild=$(cat ../liveBuildId)
+    backupBuild=$(cat ../backupBuildId)
+
+    is_active_environment()
+    {
+        if [[ $1 == ${liveBuild} ]]; then
+            return 0
+        fi
+        if [[ $1 == ${backupBuild} ]]; then
+            return 0
+        fi
+
+        return 1
+    }
+
+    for filePath in ../*; do
+        fileName=$(basename ${filePath})
+
+        if [[ ! -d ${filePath} ]] || [[ -L ${filePath} ]] || is_active_environment ${fileName}; then
+            continue
+        fi
+
+        echo "Deleting image ${fileName}."
+        rm -rf ${filePath}
+    done
+}
+
+
+
+case "$1" in
+upgrade-host)
+    # install daemon
+    /bin/cp -uf $toolkitDir/bin/service/engency /etc/init.d/engency
+    chmod u+x /etc/init.d/engency
+    /bin/cp -uf $toolkitDir/bin/service/engency.service /etc/systemd/system/engency.service
+    systemctl daemon-reload
+    systemctl enable engency
+
+    # make sure cronjobs are installed
+    /bin/cp -uf scripts/cron /etc/cron.d/engency
+
+    # set default permissions for logging
+    setfacl -R -d -m o::rwx /data/live/storage/logs
+    ;;
+cleanup)
+    cleanup
+    remove_dangling_builds
+    echo 'Cleanup completed'
+    ;;
+*)
+    echo "Usage: $0 {upgrade-host|cleanup}"
+esac
+
+exit 0

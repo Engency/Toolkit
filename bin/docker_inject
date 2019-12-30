@@ -1,0 +1,40 @@
+#!/bin/bash
+
+serviceName=webserver
+injecting=true
+
+# parse options
+while getopts "e:c:" opt; do
+    case $opt in
+    c)
+        serviceName=${OPTARG}
+        shift $((OPTIND - 1))
+        ;;
+    e)
+        injecting=false
+        shift $((OPTIND - 2))
+        ;;
+    esac
+done
+
+# set variables
+currentDir=$(basename "$PWD")
+container=$(docker ps -a | awk "/${currentDir}_${serviceName}.*Up/{print \$2}")
+service=$(docker ps -a | awk "/${currentDir}_${serviceName}.*Up/{print \$NF}")
+
+# act
+if ${injecting}; then
+    if [ -z "$service" ]; then
+        echo "No ${serviceName} service running from current directory."
+        exit 1
+    fi
+    echo "Injecting into ${service}..."
+    docker exec ${service} "$@"
+else
+    if [ -z "$container" ]; then
+        echo "No ${serviceName} container found in current directory."
+        exit 1
+    fi
+    echo "Starting new ${serviceName}..."
+    docker-compose run --rm ${serviceName} "$@"
+fi

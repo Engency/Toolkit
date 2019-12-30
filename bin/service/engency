@@ -1,0 +1,61 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          engency
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starts Engency application
+### END INIT INFO
+
+buildsPath=/home/scrutinizer/builds
+buildId=$(cat ${buildsPath}/liveBuildId)
+buildPath=${buildsPath}/${buildId}
+
+case "$1" in
+start)
+   cd $buildPath
+   sudo -u scrutinizer docker-compose up --force-recreate &
+   attempts=10
+   while ! [[ $(docker ps --filter "name=${buildId}_webserver" | grep Up) ]]; do
+       if [[ "$attempts" -eq "0" ]]; then
+          echo Engency did not show up after 10 seconds... killing service right away.
+          $0 stop
+          exit 1
+       fi
+       ((attempts--))
+       sleep 1
+   done
+   while ! [[ $(docker ps --filter "name=${buildId}_mariadb" | grep Up) ]]; do
+       if [[ "$attempts" -eq "0" ]]; then
+          echo Engency did not show up after 10 seconds... killing service right away.
+          $0 stop
+          exit 1
+       fi
+       ((attempts--))
+       sleep 1
+   done
+   echo Engency is running
+   echo $!>/var/run/engency.pid
+   ;;
+stop)
+   kill `cat /var/run/engency.pid`
+   rm /var/run/engency.pid
+   ;;
+restart)
+   $0 stop
+   $0 start
+   ;;
+status)
+   if [ -e /var/run/engency.pid ]; then
+      echo Engency is running, pid=`cat /var/run/engency.pid`
+   else
+      echo Engency is NOT running
+      exit 1
+   fi
+   ;;
+*)
+   echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0
