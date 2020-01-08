@@ -1,7 +1,7 @@
 #!/bin/bash
 
 currentDir=$(dirname $0)
-cd ${currentDir}/..
+cd ${currentDir}/../..
 buildID=${PWD##*/}
 ranMigrations='0'
 
@@ -10,6 +10,7 @@ backup_live_environment() {
 
   cd ~/builds/live
   di php artisan backup:run --quiet
+  cd ../..
 
   return 0
 }
@@ -73,7 +74,7 @@ start_live_environment() {
   sudo systemctl start engency
 
   attempts=10
-  services=(webserver mariadb cachecontroller redis)
+  services=(webserver mariadb)
   for service in "${services[@]}"; do
     while ! [[ $(docker ps --filter "name=${buildID}_${service}" | grep Up) ]]; do
       if [[ "$attempts" -eq "0" ]]; then
@@ -89,12 +90,9 @@ start_live_environment() {
   return 0
 }
 
-update_cache_and_indices() {
-  echo 'Updating cache...'
-  docker-compose run --rm webserver php artisan cache:rebuild --quiet
-
-  echo 'Updating indices...'
-  docker-compose run --rm webserver php artisan scout:import-all-organisations --quiet
+trigger_upgrade_script() {
+  echo 'Triggering upgrade script...'
+  docker-compose run --rm webserver php artisan upgrade --quiet
 
   return 0
 }
@@ -153,7 +151,5 @@ fi
 
 # service was installed with success. Rollback won't be required anymore
 
-update_cache_and_indices
-sudo /root/allowed-root-scripts.sh upgrade-host
-sudo /root/allowed-root-scripts.sh cleanup
+trigger_upgrade_script
 echo 'Completed upgrading service.'

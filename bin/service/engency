@@ -15,7 +15,7 @@ buildPath=${buildsPath}/${buildId}
 case "$1" in
 start)
    cd $buildPath
-   sudo -u scrutinizer docker-compose up --force-recreate &
+   sudo -u scrutinizer docker-compose up &
    attempts=10
    while ! [[ $(docker ps --filter "name=${buildId}_webserver" | grep Up) ]]; do
        if [[ "$attempts" -eq "0" ]]; then
