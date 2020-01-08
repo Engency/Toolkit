@@ -2,9 +2,10 @@
 
 serviceName=webserver
 injecting=true
+interactive=false
 
 # parse options
-while getopts "e:c:" opt; do
+while getopts "e:c:i:" opt; do
     case $opt in
     c)
         serviceName=${OPTARG}
@@ -12,6 +13,10 @@ while getopts "e:c:" opt; do
         ;;
     e)
         injecting=false
+        shift $((OPTIND - 2))
+        ;;
+    i)
+        interactive=true
         shift $((OPTIND - 2))
         ;;
     esac
@@ -29,7 +34,11 @@ if ${injecting}; then
         exit 1
     fi
     echo "Injecting into ${service}..."
-    docker exec ${service} "$@"
+    if ${interactive}; then
+      docker exec -i ${service} "$@"
+    else
+      docker exec ${service} "$@"
+    fi
 else
     if [ -z "$container" ]; then
         echo "No ${serviceName} container found in current directory."
