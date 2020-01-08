@@ -3,7 +3,6 @@
 currentDir=$(dirname $0)
 cd ${currentDir}/../..
 buildID=${PWD##*/}
-ranMigrations='0'
 
 backup_live_environment() {
   echo 'Backing-up live environment...'
@@ -47,10 +46,11 @@ migrate_new_environment() {
   echo ${result}
 
   if [[ ${result} == *"Migrated:"* ]]; then
-    ranMigrations='1'
+    echo -n '1' >./ranMigrations
     return 0
   else
     if [[ ${result} == *"Nothing to migrate"* ]]; then
+      echo -n '0' >./ranMigrations
       return 0
     else return 1; fi
   fi
@@ -99,6 +99,8 @@ trigger_upgrade_script() {
 
 rollback_database() {
   echo 'Performing database rollback...'
+
+  ranMigrations=$(cat ~/builds/live/ranMigrations)
 
   if [[ ranMigrations -eq '1' ]]; then
     docker-compose run --rm webserver php artisan migrate:rollback
