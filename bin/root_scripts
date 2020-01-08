@@ -1,6 +1,6 @@
 #!/bin/bash
 
-toolkitDir=$(dirname $0)/vendor/Engency/toolkit
+toolkitDir=$PWD/vendor/Engency/toolkit
 
 if [[ $(whoami) != "root" ]]; then
     echo 'Not logged in as root. This script needs elevated permissions. Aborting...'
@@ -56,10 +56,10 @@ upgrade-host)
     systemctl enable engency
 
     # make sure cronjobs are installed
-    /bin/cp -uf scripts/cron /etc/cron.d/engency
+    /bin/cp -uf $toolkitDir/cron/cron /etc/cron.d/engency
 
     # set default permissions for logging
-    setfacl -R -d -m o::rwx /data/live/storage/logs
+    setfacl -R -d -m o::rwx $PWD/storage/logs
     ;;
 cleanup)
     cleanup

@@ -3,6 +3,7 @@
 currentDir=$(dirname $0)
 cd ${currentDir}/..
 buildID=${PWD##*/}
+ranMigrations='0'
 
 backup_live_environment() {
   echo 'Backing-up live environment...'
@@ -39,18 +40,16 @@ migrate_new_environment() {
   # migrate data
   echo 'Migrating data...'
   docker-compose up mariadb &
-  docker-compose up redis &
   sleep 5
 
   result=$(docker-compose run --rm webserver php artisan migrate --force --no-interaction)
   echo ${result}
 
   if [[ ${result} == *"Migrated:"* ]]; then
-    echo -n '1' >./ranMigrations
+    ranMigrations='1'
     return 0
   else
     if [[ ${result} == *"Nothing to migrate"* ]]; then
-      echo -n '0' >./ranMigrations
       return 0
     else return 1; fi
   fi
@@ -102,8 +101,6 @@ update_cache_and_indices() {
 
 rollback_database() {
   echo 'Performing database rollback...'
-
-  ranMigrations=$(cat ~/builds/live/ranMigrations)
 
   if [[ ranMigrations -eq '1' ]]; then
     docker-compose run --rm webserver php artisan migrate:rollback

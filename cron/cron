@@ -1,0 +1,5 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=frank@engency.com
+* * * * * root cd /home/scrutinizer/builds/live && vendor/bin/docker_inject php artisan schedule:run >> /var/log/cron.log 2>&1
+55 4 * * 6 root certbot renew -q
