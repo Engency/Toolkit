@@ -8,7 +8,7 @@ backup_live_environment() {
   echo 'Backing-up live environment...'
 
   cd ~/builds/live
-  di php artisan backup:run --quiet
+  vendor/bin/docker_inject php artisan backup:run --quiet
   cd ../..
 
   return 0
@@ -39,6 +39,7 @@ stop_live_environment() {
 migrate_new_environment() {
   # migrate data
   echo 'Migrating data...'
+  cd ~/builds/${buildID}
   docker-compose up mariadb &
   sleep 5
 
@@ -54,6 +55,7 @@ migrate_new_environment() {
       return 0
     else return 1; fi
   fi
+  cd ../..
 }
 
 install_new_environment() {
