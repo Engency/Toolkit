@@ -23,9 +23,21 @@
     "bin/root_scripts",
     "bin/upgrade_service"
   ],
-  "require": {},
+  "require": {
+    "php": "^7.4",
+    "ext-json": "*",
+    "laravel/framework": "6.0.*",
+    "illuminate/container": "^6.0",
+    "illuminate/contracts": "^6.0",
+    "illuminate/support": "^6.0",
+    "symfony/http-foundation": "^4.3.4"
+  },
   "require-dev": {},
-  "autoload": {},
+  "autoload": {
+    "psr-4": {
+      "Engency\\": "src/Engency/"
+    }
+  },
   "autoload-dev": {},
   "config": {}
 }
