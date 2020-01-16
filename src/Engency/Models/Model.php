@@ -1,14 +1,17 @@
 <?php
+/**
+ * @author    Frank Kuipers <frank@engency.com>
+ * @copyright 2020 Engency
+ * @since     File available since 15-01-20 15:54
+ */
 
 namespace Engency\Models;
 
-use Engency\Models\Model\ModelReflection;
-use Engency\Models\Model\ModelRelations;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class \Engency\Models\Model
+ * Class \Engency\Models
  *
  * @property int    $Id
  * @property string $Name
@@ -53,7 +56,7 @@ abstract class Model extends EloquentModel
     /**
      * @param string|null $identifier
      *
-     * @return \Engency\Models\Model|null
+     * @return \Engency\Models|null
      */
     public static function resolveFromRouteParameter(?string $identifier) : ?Model
     {

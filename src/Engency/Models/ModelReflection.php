@@ -1,14 +1,11 @@
 <?php
 /**
- * This file is part of one or more VZC products.
- * All rights belong to Van Zetten consultants
- *
- * @author    frank <f.kuipers@vanzettenconsultants.nl>
- * @copyright 2019 Van Zetten consultants
- * @since     File available since 22-5-19 16:28
+ * @author    Frank Kuipers <frank@engency.com>
+ * @copyright 2020 Engency
+ * @since     File available since 15-01-20 15:54
  */
 
-namespace Engency\Models\Model;
+namespace Engency\Models;
 
 use ReflectionClass;
 use ReflectionException;
@@ -16,7 +13,7 @@ use ReflectionException;
 /**
  * Trait ModelReflection
  *
- * @package Engency\Models\Model
+ * @package Engency\Models
  */
 trait ModelReflection
 {
@@ -44,7 +41,7 @@ trait ModelReflection
     }
 
     /**
-     * @param \App\Models\Model|mixed $object
+     * @param \App\Models|mixed $object
      *
      * @return bool
      */

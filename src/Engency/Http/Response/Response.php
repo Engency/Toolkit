@@ -8,8 +8,8 @@
 namespace Engency\Http\Response;
 
 use Illuminate\Database\Eloquent\Model;
-use Engency\Models\Standards\OccasionArrayModel;
 use Illuminate\Contracts\Support\Responsable;
+use Engency\Models\OccasionArrayModel;
 
 /**
  * Class \Engency\Http\Response\Response
@@ -32,7 +32,7 @@ class Response implements Responsable
     private $responseMeta = [];
 
     /**
-     * @var \App\Models\Model
+     * @var \App\Models
      */
     private $instance;
 
@@ -243,7 +243,7 @@ class Response implements Responsable
     }
 
     /**
-     * @return \App\Models\Model|null
+     * @return \App\Models|null
      */
     protected function getInstance()
     {

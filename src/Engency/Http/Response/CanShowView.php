@@ -7,7 +7,7 @@
 
 namespace Engency\Http\Response;
 
-use App\Models\Model;
+use App\Models;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,7 +94,7 @@ trait CanShowView
     abstract public function getData(): array;
 
     /**
-     * @return \App\Models\Model|null
+     * @return \App\Models|null
      */
     abstract protected function getInstance();
 

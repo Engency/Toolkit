@@ -5,12 +5,12 @@
  * @since     File available since 15-01-20 15:54
  */
 
-namespace Engency\Models\Standards;
+namespace Engency\Models;
 
 /**
  * Interface OccasionArrayable
  *
- * @package App\Models\Standards
+ * @package Engency\Models
  */
 interface OccasionArrayModel
 {
