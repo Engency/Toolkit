@@ -64,7 +64,9 @@ trait Validatable
 
         $success = self::validateWithRules($data, $rules);
         if (!$success) {
-            Request::flash();
+            if(Request::hasSession()) {
+                Request::flash();
+            }
             throw new ValidationException(self::$validator);
         }
     }
