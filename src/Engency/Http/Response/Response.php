@@ -165,8 +165,8 @@ class Response implements Responsable
         return [
             'meta'       => $this->responseMeta,
             'data'       => array_merge($this->data, $this->getInstanceData()),
-            'serverTime' => time(),
-            'success'    => (bool) $this->success,
+            'ServerTime' => time(),
+            'Success'    => (bool) $this->success,
         ];
     }
 
