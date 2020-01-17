@@ -22,10 +22,13 @@ trait CanShowJson
 
     /**
      * @param bool $value
+     * @return static
      */
     public function json(bool $value = true)
     {
         $this->forceJson = $value;
+
+        return $this;
     }
 
     /**
