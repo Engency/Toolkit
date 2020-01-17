@@ -18,6 +18,16 @@ use Symfony\Component\HttpFoundation\Response;
 trait CanShowJson
 {
 
+    private $forceJson = false;
+
+    /**
+     * @param bool $value
+     */
+    public function json(bool $value = true)
+    {
+        $this->forceJson = $value;
+    }
+
     /**
      * @param \Illuminate\Http\Request $request
      *
@@ -25,13 +35,13 @@ trait CanShowJson
      */
     protected function canShowJson(Request $request)
     {
-        return $request->expectsJson();
+        return $this->forceJson || $request->expectsJson();
     }
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function doShowJson(): Response
+    protected function doShowJson() : Response
     {
         return response()->json($this->getData(), $this->getHttpStatusCode());
     }
@@ -39,10 +49,10 @@ trait CanShowJson
     /**
      * @return array
      */
-    abstract public function getData(): array;
+    abstract public function getData() : array;
 
     /**
      * @return int
      */
-    abstract protected function getHttpStatusCode(): int;
+    abstract protected function getHttpStatusCode() : int;
 }
