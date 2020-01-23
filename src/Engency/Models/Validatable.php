@@ -19,12 +19,6 @@ trait Validatable
 {
 
     /**
-     * @var \Illuminate\Validation\Validator|null
-     */
-    private static $validator        = null;
-    private static $validationErrors = [];
-
-    /**
      * @param array       $data
      * @param string|null $occasion
      *
@@ -62,15 +56,7 @@ trait Validatable
             return $data;
         }
 
-        $success = self::validateWithRules($data, $rules);
-        if (!$success) {
-            if (Request::hasSession()) {
-                Request::flash();
-            }
-            throw new ValidationException(self::$validator);
-        }
-
-        return array_intersect($data, $rules);
+        return self::validateWithRules($data, $rules);
     }
 
     /**
@@ -92,22 +78,20 @@ trait Validatable
     /**
      * @param array $data
      * @param array $rules
-     *
-     * @return bool
+     * @return array
+     * @throws ValidationException
      */
-    public static function validateWithRules(array $data, array $rules) : bool
+    public static function validateWithRules(array $data, array $rules) : array
     {
         $validator = \Validator::make($data, $rules);
-
         if ($validator->fails()) {
-            // failed validation, there were validation errors
-            self::$validator = $validator;
-
-            return false;
+            if (Request::hasSession()) {
+                Request::flash();
+            }
+            throw new ValidationException($validator);
         }
 
-        // passed validation
-        return true;
+        return $validator->validated();
     }
 
     /**
@@ -127,27 +111,6 @@ trait Validatable
      * @return mixed
      */
     abstract public function save(array $options = []);
-
-    /**
-     * Get the validation errors. Please call validate first in order to generate errors
-     *
-     * @return string
-     */
-    public static function getValidationErrors() : string
-    {
-        $messages = [];
-        if (( self::$validator === null )) {
-            return '';
-        }
-
-        foreach (self::$validator->messages()->getMessages() as $field => $errors) {
-            foreach ($errors as $error) {
-                $messages[] = $error;
-            }
-        }
-
-        return implode(', ', $messages);
-    }
 
     /**
      * @param array       $data
@@ -176,14 +139,7 @@ trait Validatable
         $rules = self::getValidatorRule($occasion);
         $rules = $this->getRulesWithExceptCurrentInstance($rules);
 
-        if (!self::validateWithRules($data, $rules)) {
-            if (Request::hasSession()) {
-                Request::flash();
-            }
-            throw new ValidationException(self::$validator);
-        }
-
-        return array_intersect($data, $rules);
+        return self::validateWithRules($data, $rules);
     }
 
     /**
