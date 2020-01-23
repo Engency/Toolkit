@@ -34,13 +34,14 @@ trait Validatable
      */
     public static function validateAndCreateNew(array $data, ?string $occasion = 'default')
     {
-        self::validate($data, $occasion);
+        $validated = self::validateDataBeforeCreate($data, $occasion);
 
-        // validation successfull
+        // validation succeeded and passed data is stored in $validated
+
         $instance = new static();
-        $instance->fill($data);
+        $instance->fill($validated);
         $instance->save();
-        $instance->fill($data);
+        $instance->fill($validated);
 
         return $instance;
     }
@@ -50,15 +51,15 @@ trait Validatable
      *
      * @param array       $data
      * @param string|null $occasion
-     *
+     * @return array
      * @throws ValidationException
      */
-    public static function validate(array $data, ?string $occasion = 'default')
+    public static function validateDataBeforeCreate(array $data, ?string $occasion = 'default') : array
     {
         // get rules which belong to occasion
         $rules = self::getValidatorRule($occasion);
         if (count($rules) === 0) {
-            return;
+            return $data;
         }
 
         $success = self::validateWithRules($data, $rules);
@@ -68,6 +69,8 @@ trait Validatable
             }
             throw new ValidationException(self::$validator);
         }
+
+        return array_intersect($data, $rules);
     }
 
     /**
@@ -154,29 +157,33 @@ trait Validatable
      */
     public function validateAndUpdate(array $data, ?string $occasion = 'default')
     {
-        if (!$this->validateUpdate($data, $occasion)) {
-            if (Request::hasSession()) {
-                Request::flash();
-            }
-            throw new ValidationException(self::$validator);
-        }
+        $validatedData = $this->validateDataBeforeUpdate($data, $occasion);
 
-        $this->fill($data);
+        // validation succeeded and passed data is stored in $validated
+
+        $this->fill($validatedData);
         $this->save();
     }
 
     /**
      * @param array       $data
      * @param string|null $occasion
-     *
-     * @return bool
+     * @return array
+     * @throws ValidationException
      */
-    public function validateUpdate(array $data, ?string $occasion = 'default') : bool
+    public function validateDataBeforeUpdate(array $data, ?string $occasion = 'default') : array
     {
         $rules = self::getValidatorRule($occasion);
         $rules = $this->getRulesWithExceptCurrentInstance($rules);
 
-        return self::validateWithRules($data, $rules);
+        if (!self::validateWithRules($data, $rules)) {
+            if (Request::hasSession()) {
+                Request::flash();
+            }
+            throw new ValidationException(self::$validator);
+        }
+
+        return array_intersect($data, $rules);
     }
 
     /**
