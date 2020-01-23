@@ -155,7 +155,9 @@ trait Validatable
     public function validateAndUpdate(array $data, ?string $occasion = 'default')
     {
         if (!$this->validateUpdate($data, $occasion)) {
-            Request::flash();
+            if (Request::hasSession()) {
+                Request::flash();
+            }
             throw new ValidationException(self::$validator);
         }
 
