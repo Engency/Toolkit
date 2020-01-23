@@ -46,14 +46,13 @@ trait ModelRelations
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
         $namespace = $this->getNamespaceFromClassName($related);
-        $related   = Arr::last(explode('\\', $namespace));
 
         if ($foreignKey === null) {
-            $foreignKey = $this->getModelName() . 'Id';
+            $foreignKey = $this->getModelName();
         }
 
         if ($localKey === null) {
-            $localKey = $related;
+            $localKey = $this->getModelName() . 'Id';
         }
 
         return parent::hasOne($namespace, $foreignKey, $localKey);
