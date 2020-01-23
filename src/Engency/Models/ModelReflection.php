@@ -41,7 +41,7 @@ trait ModelReflection
     }
 
     /**
-     * @param \App\Models|mixed $object
+     * @param Model|mixed $object
      *
      * @return bool
      */

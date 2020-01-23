@@ -7,9 +7,10 @@
 
 namespace Engency\Http\Response;
 
-use App\Models;
 use Closure;
+use Engency\Models\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -48,7 +49,7 @@ trait CanShowView
     /**
      * @return bool
      */
-    protected function hasView(): bool
+    protected function hasView() : bool
     {
         return strlen($this->view) > 0;
     }
@@ -66,13 +67,13 @@ trait CanShowView
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function doShowView(): Response
+    protected function doShowView() : Response
     {
         $allData  = $this->getData();
         $data     = $allData['data'];
         $instance = $this->getInstance();
         if ($instance instanceof Model) {
-            $data[camel_case(class_basename($instance))] = $instance;
+            $data[Str::camel(class_basename($instance))] = $instance;
         }
         $data = array_merge($allData['meta'] ?? [], $data);
 
@@ -91,10 +92,10 @@ trait CanShowView
     /**
      * @return array
      */
-    abstract public function getData(): array;
+    abstract public function getData() : array;
 
     /**
-     * @return \App\Models|null
+     * @return \Engency\Models\Model|null
      */
     abstract protected function getInstance();
 
@@ -133,5 +134,5 @@ trait CanShowView
     /**
      * @return int
      */
-    abstract protected function getHttpStatusCode(): int;
+    abstract protected function getHttpStatusCode() : int;
 }

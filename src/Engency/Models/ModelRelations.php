@@ -7,6 +7,8 @@
 
 namespace Engency\Models;
 
+use Illuminate\Support\Arr;
+
 /**
  * Trait ModelRelations
  *
@@ -44,7 +46,7 @@ trait ModelRelations
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
         $namespace = $this->getNamespaceFromClassName($related);
-        $related   = array_last(explode('\\', $namespace));
+        $related   = Arr::last(explode('\\', $namespace));
 
         if ($foreignKey === null) {
             $foreignKey = $this->getModelName() . 'Id';
@@ -90,7 +92,7 @@ trait ModelRelations
     public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)
     {
         $namespace = $this->getNamespaceFromClassName($related);
-        $related   = array_last(explode('\\', $namespace));
+        $related   = Arr::last(explode('\\', $namespace));
 
         if ($foreignKey === null) {
             $foreignKey = $related;
@@ -127,7 +129,7 @@ trait ModelRelations
     )
     {
         $namespace = $this->getNamespaceFromClassName($related);
-        $related   = array_last(explode('\\', $namespace));
+        $related   = Arr::last(explode('\\', $namespace));
 
         $self = $this->getModelName();
         if ($table === null) {

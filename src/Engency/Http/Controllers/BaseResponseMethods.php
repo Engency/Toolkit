@@ -4,14 +4,13 @@ namespace Engency\Http\Controllers;
 
 use Engency\Http\Response\DefaultResponse;
 use Engency\Http\Response\Response;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response as IlluminateResponse;
 
 Trait BaseResponseMethods
 {
     /**
      * @param array|\Illuminate\Database\Eloquent\Model $data
-     * @param string                                   $view
+     * @param string                                    $view
      *
      * @return \Engency\Http\Response\Response
      */

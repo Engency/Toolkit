@@ -7,9 +7,8 @@
 
 namespace Engency\Models;
 
-use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\ValidationException;
-use Validator;
+use Request;
 
 /**
  * Trait Validatable
@@ -64,7 +63,7 @@ trait Validatable
 
         $success = self::validateWithRules($data, $rules);
         if (!$success) {
-            if(Request::hasSession()) {
+            if (Request::hasSession()) {
                 Request::flash();
             }
             throw new ValidationException(self::$validator);
@@ -80,10 +79,7 @@ trait Validatable
      */
     private static function getValidatorRule(string $occasion) : array
     {
-        if (isset(self::$rules) && is_array(self::$rules) && isset(self::$rules[$occasion]) && is_array(
-                self::$rules[$occasion]
-            )
-        ) {
+        if (isset(self::$rules) && is_array(self::$rules) && isset(self::$rules[$occasion]) && is_array(self::$rules[$occasion])) {
             return self::$rules[$occasion];
         }
 
@@ -98,7 +94,7 @@ trait Validatable
      */
     public static function validateWithRules(array $data, array $rules) : bool
     {
-        $validator = Validator::make($data, $rules);
+        $validator = \Validator::make($data, $rules);
 
         if ($validator->fails()) {
             // failed validation, there were validation errors

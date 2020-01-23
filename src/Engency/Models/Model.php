@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int    $Id
  * @property string $Name
  * @method static \Illuminate\Database\Eloquent\Builder orderBy( $column, $direction = 'asc' )
- * @method static \Illuminate\Database\Eloquent\Builder where( $column, $operator = null, $value = null, $boolean = 'and' )
+ * @method static \Illuminate\Database\Eloquent\Builder where( $column, $operator = null, $value = null, $boolean ='and' )
  * @method static \Illuminate\Database\Eloquent\Builder whereNull( $column, $boolean = 'and', $not = false )
  * @method static \Illuminate\Database\Eloquent\Builder whereIn( $column, $values, $boolean = 'and', $not = false )
  * @method static \Illuminate\Database\Eloquent\Builder whereNotIn( $column, $values, $boolean = 'and' )
@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static static create( array $attributes = [] )
  * @method static static insert( array $attributes = [] )
  * @method static static firstOrCreate( array $attributes, array $values = [] )
- * @method static \Illuminate\Database\Eloquent\Builder|static whereHas( $relation, \Closure $callback = null, $operator = '>=', $count = 1 )
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereHas( $relation, \Closure $callback = null,$operator = '>=', $count = 1 )
  * @method static \Illuminate\Database\Eloquent\Builder select( $columns = ['*'] )
  * @package Engency\Models
  */
@@ -56,7 +56,7 @@ abstract class Model extends EloquentModel
     /**
      * @param string|null $identifier
      *
-     * @return \Engency\Models|null
+     * @return Model|null
      */
     public static function resolveFromRouteParameter(?string $identifier) : ?Model
     {
