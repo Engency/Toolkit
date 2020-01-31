@@ -91,7 +91,7 @@ trait ModelRelations
     public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)
     {
         $namespace = $this->getNamespaceFromClassName($related);
-        $related   = Arr::last(explode('\\', $namespace));
+        $related   = lcfirst(Arr::last(explode('\\', $namespace)));
 
         if ($foreignKey === null) {
             $foreignKey = $related;
@@ -133,9 +133,9 @@ trait ModelRelations
         $self = $this->getModelName();
         if ($table === null) {
             if (strcmp($self, $related) < 0) {
-                $table = $self . 'Has' . $related;
+                $table = ucfirst($self) . 'Has' . $related;
             } else {
-                $table = $related . 'Has' . $self;
+                $table = $related . 'Has' . ucfirst($self);
             }
         }
 
@@ -144,7 +144,7 @@ trait ModelRelations
         }
 
         if ($relatedPivotKey === null) {
-            $relatedPivotKey = $related;
+            $relatedPivotKey = lcfirst($related);
         }
 
         return parent::belongsToMany(

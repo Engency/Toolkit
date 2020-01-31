@@ -47,7 +47,7 @@ abstract class Model extends EloquentModel
     {
         $model = $this->getModelName();
 
-        $this->table      = $model;
+        $this->table      = ucfirst($model);
         $this->primaryKey = $model . 'Id';
 
         parent::__construct($attributes);

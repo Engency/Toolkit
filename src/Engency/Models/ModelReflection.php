@@ -30,9 +30,9 @@ trait ModelReflection
         if ($this->modelName === null) {
             try {
                 $selfReflection  = new ReflectionClass(static::class);
-                $this->modelName = $selfReflection->getShortName();
+                $this->modelName = lcfirst($selfReflection->getShortName());
             } catch (ReflectionException $e) {
-                // this theoratically won't ever happen
+                // this theoretically won't ever happen
                 return null;
             }
         }

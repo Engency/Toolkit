@@ -237,7 +237,7 @@ trait CanFillArrayFields
             $relationName = substr($relationName, 0, ( strlen($relationName) - 1 ));
         }
 
-        return ucfirst($relationName . 'Id');
+        return lcfirst($relationName . 'Id');
     }
 
     /**
