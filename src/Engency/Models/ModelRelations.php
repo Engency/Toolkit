@@ -48,7 +48,7 @@ trait ModelRelations
         $namespace = $this->getNamespaceFromClassName($related);
 
         if ($foreignKey === null) {
-            $foreignKey = $this->getModelName();
+            $foreignKey = $this->getModelName() . 'Id';
         }
 
         if ($localKey === null) {
@@ -70,7 +70,7 @@ trait ModelRelations
         $namespace = $this->getNamespaceFromClassName($related);
 
         if ($foreignKey === null) {
-            $foreignKey = $this->getModelName();
+            $foreignKey = $this->getModelName() . 'Id';
         }
 
         if ($localKey === null) {
@@ -94,7 +94,7 @@ trait ModelRelations
         $related   = lcfirst(Arr::last(explode('\\', $namespace)));
 
         if ($foreignKey === null) {
-            $foreignKey = $related;
+            $foreignKey = $related . 'Id';
         }
 
         if ($ownerKey === null) {
@@ -140,11 +140,11 @@ trait ModelRelations
         }
 
         if ($foreignPivotKey === null) {
-            $foreignPivotKey = $self;
+            $foreignPivotKey = $self . 'Id';
         }
 
         if ($relatedPivotKey === null) {
-            $relatedPivotKey = lcfirst($related);
+            $relatedPivotKey = lcfirst($related) . 'Id';
         }
 
         return parent::belongsToMany(
