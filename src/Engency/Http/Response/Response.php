@@ -8,8 +8,10 @@
 namespace Engency\Http\Response;
 
 use Engency\Models\OccasionArrayModel;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * Class \Engency\Http\Response\Response
@@ -27,12 +29,17 @@ class Response implements Responsable
     private $data;
 
     /**
+     * @var Collection|null
+     */
+    private $collectionData = null;
+
+    /**
      * @var array
      */
     private $responseMeta = [];
 
     /**
-     * @var Model
+     * @var \Engency\Models\Model
      */
     private $instance;
 
@@ -60,6 +67,8 @@ class Response implements Responsable
 
         if ($data instanceof Model) {
             $this->instance = $data;
+        } elseif ($data instanceof Collection) {
+            $this->setCollectionAsData($data);
         } else {
             $this->addData($data);
         }
@@ -187,6 +196,30 @@ class Response implements Responsable
     }
 
     /**
+     * @return array
+     */
+    private function getCollectionData() : array
+    {
+        if (!( $this->collectionData instanceof Collection )) {
+            return [];
+        }
+
+        $data = [];
+        $this->collectionData
+            ->each(function ($item, $key) use (&$data) {
+                if ($item instanceof OccasionArrayModel) {
+                    $data[$key] = $item->toOccasionArray($this->occasion);
+                } elseif ($item instanceof Arrayable) {
+                    $data[$key] = $item->toArray();
+                } else {
+                    $data[$key] = $item;
+                }
+            });
+
+        return $data;
+    }
+
+    /**
      * @param \Illuminate\Http\Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -243,10 +276,18 @@ class Response implements Responsable
     }
 
     /**
-     * @return \App\Models|null
+     * @return \Engency\Models\Model|null
      */
     protected function getInstance()
     {
         return $this->instance;
+    }
+
+    /**
+     * @param Collection $collection
+     */
+    private function setCollectionAsData(Collection $collection)
+    {
+        $this->collectionData = $collection;
     }
 }
