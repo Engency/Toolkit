@@ -132,7 +132,7 @@ trait ModelRelations
 
         $self = $this->getModelName();
         if ($table === null) {
-            if (strcmp($self, $related) < 0) {
+            if (strcmp($self, lcfirst($related)) < 0) {
                 $table = ucfirst($self) . 'Has' . $related;
             } else {
                 $table = $related . 'Has' . ucfirst($self);
