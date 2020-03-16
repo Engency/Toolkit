@@ -9,8 +9,8 @@ use Illuminate\Http\Response as IlluminateResponse;
 Trait BaseResponseMethods
 {
     /**
-     * @param array|\Illuminate\Database\Eloquent\Model|\Illuminate\Pagination\LengthAwarePaginator $data
-     * @param string                                                                                $view
+     * @param array|\Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator $data
+     * @param string                                                                                                                                      $view
      *
      * @return \Engency\Http\Response\Response
      */

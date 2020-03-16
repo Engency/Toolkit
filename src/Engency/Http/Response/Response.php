@@ -65,7 +65,7 @@ class Response implements Responsable
     private $httpStatusCode = 200;
 
     /**
-     * @param array|Model|Collection|LengthAwarePaginator $data
+     * @param array|Model|Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator $data
      */
     public function __construct($data = [])
     {
