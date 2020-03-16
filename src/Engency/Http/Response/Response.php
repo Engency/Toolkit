@@ -11,6 +11,7 @@ use Engency\Models\OccasionArrayModel;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 /**
@@ -32,6 +33,11 @@ class Response implements Responsable
      * @var Collection|null
      */
     private $collectionData = null;
+
+    /**
+     * @var LengthAwarePaginator|null
+     */
+    private $paginatorData = null;
 
     /**
      * @var array
@@ -59,7 +65,7 @@ class Response implements Responsable
     private $httpStatusCode = 200;
 
     /**
-     * @param array|Model $data
+     * @param array|Model|Collection|LengthAwarePaginator $data
      */
     public function __construct($data = [])
     {
@@ -69,6 +75,8 @@ class Response implements Responsable
             $this->instance = $data;
         } elseif ($data instanceof Collection) {
             $this->setCollectionAsData($data);
+        } elseif ($data instanceof LengthAwarePaginator) {
+            $this->setLengthAwarePaginatorAsData($data);
         } else {
             $this->addData($data);
         }
@@ -173,7 +181,12 @@ class Response implements Responsable
     {
         return [
             'meta'       => $this->responseMeta,
-            'data'       => array_merge($this->data, $this->getInstanceData(), $this->getCollectionData()),
+            'data'       => array_merge(
+                $this->data,
+                $this->getInstanceData(),
+                $this->getCollectionData(),
+                $this->getPaginatedData()
+            ),
             'serverTime' => time(),
             'success'    => (bool) $this->success,
         ];
@@ -204,17 +217,37 @@ class Response implements Responsable
             return [];
         }
 
-        $data = [];
-        $this->collectionData
-            ->each(function ($item, $key) use (&$data) {
-                if ($item instanceof OccasionArrayModel) {
-                    $data[$key] = $item->toOccasionArray($this->occasion);
-                } elseif ($item instanceof Arrayable) {
-                    $data[$key] = $item->toArray();
-                } else {
-                    $data[$key] = $item;
-                }
-            });
+        return $this->properlyExportCollection($this->collectionData);
+    }
+
+    /**
+     * @param Collection $collection
+     * @return array
+     */
+    private function properlyExportCollection(Collection $collection)
+    {
+        return $collection->mapWithKeys(function ($item, $key) {
+            if ($item instanceof OccasionArrayModel) {
+                return [$key => $item->toOccasionArray($this->occasion)];
+            } elseif ($item instanceof Arrayable) {
+                return [$key => $item->toArray()];
+            } else {
+                return [$key => $item];
+            }
+        })->toArray();
+    }
+
+    /**
+     * @return array
+     */
+    private function getPaginatedData() : array
+    {
+        if (!( $this->paginatorData instanceof LengthAwarePaginator )) {
+            return [];
+        }
+
+        $data         = $this->paginatorData->toArray();
+        $data['data'] = $this->properlyExportCollection($this->paginatorData->getCollection());
 
         return $data;
     }
@@ -289,5 +322,13 @@ class Response implements Responsable
     private function setCollectionAsData(Collection $collection)
     {
         $this->collectionData = $collection;
+    }
+
+    /**
+     * @param LengthAwarePaginator $paginator
+     */
+    private function setLengthAwarePaginatorAsData(LengthAwarePaginator $paginator)
+    {
+        $this->paginatorData = $paginator;
     }
 }
