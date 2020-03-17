@@ -315,9 +315,20 @@ class Response implements Responsable
     {
         $this->collectionData = $paginator->getCollection();
 
-        $metaData = $paginator->toArray();
-        unset($metaData['data']);
-
-        $this->addResponseMeta($metaData);
+        $this->addResponseMeta(
+            [
+                'currentPage'  => $paginator->currentPage(),
+                'firstPageUrl' => $paginator->url(1),
+                'from'         => $paginator->firstItem(),
+                'lastPage'     => $paginator->lastPage(),
+                'lastPageUrl'  => $paginator->url($paginator->lastPage()),
+                'nextPageUrl'  => $paginator->nextPageUrl(),
+                'path'         => $paginator->path(),
+                'perPage'      => $paginator->perPage(),
+                'prevPageUrl'  => $paginator->previousPageUrl(),
+                'to'           => $paginator->lastItem(),
+                'total'        => $paginator->total(),
+            ]
+        );
     }
 }
