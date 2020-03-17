@@ -184,8 +184,7 @@ class Response implements Responsable
             'data'       => array_merge(
                 $this->data,
                 $this->getInstanceData(),
-                $this->getCollectionData(),
-                $this->getPaginatedData()
+                $this->getCollectionData()
             ),
             'serverTime' => time(),
             'success'    => (bool) $this->success,
@@ -235,21 +234,6 @@ class Response implements Responsable
                 return [$key => $item];
             }
         })->toArray();
-    }
-
-    /**
-     * @return array
-     */
-    private function getPaginatedData() : array
-    {
-        if (!( $this->paginatorData instanceof LengthAwarePaginator )) {
-            return [];
-        }
-
-        $data         = $this->paginatorData->toArray();
-        $data['data'] = $this->properlyExportCollection($this->paginatorData->getCollection());
-
-        return $data;
     }
 
     /**
@@ -329,6 +313,11 @@ class Response implements Responsable
      */
     private function setLengthAwarePaginatorAsData(LengthAwarePaginator $paginator)
     {
-        $this->paginatorData = $paginator;
+        $this->collectionData = $paginator->getCollection();
+
+        $metaData = $paginator->toArray();
+        unset($metaData['data']);
+
+        $this->addResponseMeta($metaData);
     }
 }
