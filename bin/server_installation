@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# install fail2ban
+
+sudo apt-get install fail2ban
+sudo nano /etc/fail2ban/jail.conf
+→ [sshd]
+→ enabled = true
+→ port = ssh
+→ filter = sshd
+→ logpath = /var/log/auth.log
+→ maxretry = 3
+
+→ # Destination email address used solely for the interpolations in
+→ # jail.{conf,local,d/*} configuration files.
+→ destemail = fail2ban@engency.com
+→
+→ # Sender email address used solely for some actions
+→ sender = fail2ban@<fq-hostname>
+
+→ # Choose default action.  To change, just override value of 'action' with the
+→ # interpolation to the chosen action shortcut (e.g.  action_mw, action_mwl, etc) in jail.local
+→ # globally (section [DEFAULT]) or per specific section
+→ action = %(action_mwl)s
+
+# disable connection refused reports
+sudo nano /etc/fail2ban/filter.d/sshd.conf
+# remove line with “refused connect from”
+
+# enable fail2ban and denyhosts
+sudo systemctl enable fail2ban
