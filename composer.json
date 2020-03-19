@@ -30,7 +30,8 @@
     "illuminate/container": "^6.0",
     "illuminate/contracts": "^6.0",
     "illuminate/support": "^6.0",
-    "symfony/http-foundation": "^4.3.4"
+    "symfony/http-foundation": "^4.3.4",
+    "ext-tidy": "*"
   },
   "require-dev": {},
   "autoload": {
@@ -39,5 +40,12 @@
     }
   },
   "autoload-dev": {},
-  "config": {}
+  "config": {},
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Engency\\Providers\\EngencyServiceProvider"
+      ]
+    }
+  }
 }
