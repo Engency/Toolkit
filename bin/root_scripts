@@ -1,6 +1,6 @@
 #!/bin/bash
 
-toolkitDir=$PWD/vendor/Engency/toolkit
+toolkitDir=$PWD/vendor/engency/toolkit
 
 if [[ $(whoami) != "root" ]]; then
     echo 'Not logged in as root. This script needs elevated permissions. Aborting...'
