@@ -5,11 +5,12 @@ namespace Engency\Http\Controllers;
 use Engency\Http\Response\DefaultResponse;
 use Engency\Http\Response\Response;
 use Illuminate\Http\Response as IlluminateResponse;
+use Illuminate\Support\Collection;
 
 Trait BaseResponseMethods
 {
     /**
-     * @param array|\Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator $data
+     * @param Collection|array|\Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator $data
      * @param string                                                                                                                                      $view
      *
      * @return \Engency\Http\Response\Response
