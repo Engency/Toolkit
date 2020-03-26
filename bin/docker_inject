@@ -24,8 +24,8 @@ done
 
 # set variables
 currentDir=$(basename "$PWD")
-container=$(docker ps -a | awk "/${currentDir}_${serviceName}.*Up/{print \$2}")
-service=$(docker ps -a | awk "/${currentDir}_${serviceName}.*Up/{print \$NF}")
+container=$(docker ps -a | awk "/Up.*${currentDir}_${serviceName}_/{print \$2}")
+service=$(docker ps -a | awk "/Up.*${currentDir}_${serviceName}_/{print \$NF}")
 
 # act
 if ${injecting}; then
