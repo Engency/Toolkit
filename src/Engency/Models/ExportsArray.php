@@ -7,6 +7,7 @@
 
 namespace Engency\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -94,6 +95,10 @@ trait ExportsArray
             $value = $value->toArray();
         }
 
+        if ($value instanceof Carbon) {
+            $value = $this->parseFieldAsDate($field[0], $value, $field[1]);
+        }
+
         return [$field[0] => $value];
     }
 
@@ -176,6 +181,21 @@ trait ExportsArray
         }
 
         return ( $item === null ) ? null : $item->toArray();
+    }
+
+    /**
+     * @param string $fieldName
+     * @param Carbon $date
+     * @param array  $properties
+     * @return string
+     */
+    private function parseFieldAsDate(string $fieldName, Carbon $date, array $properties) : string
+    {
+        if (isset($properties[0]['dateFormat'])) {
+            return $date->format($properties[0]['dateFormat']);
+        }
+
+        return $date->toISOString();
     }
 
     /**
