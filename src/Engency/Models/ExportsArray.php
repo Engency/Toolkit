@@ -191,8 +191,8 @@ trait ExportsArray
      */
     private function parseFieldAsDate(string $fieldName, Carbon $date, array $properties) : string
     {
-        if (isset($properties[0]['dateFormat'])) {
-            return $date->format($properties[0]['dateFormat']);
+        if (isset($properties['dateFormat'])) {
+            return $date->format($properties['dateFormat']);
         }
 
         return $date->toISOString();
