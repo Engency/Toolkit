@@ -3,9 +3,10 @@
 serviceName=webserver
 injecting=true
 interactive=false
+user=root
 
 # parse options
-while getopts "e:c:i:" opt; do
+while getopts "e:c:i:u:" opt; do
     case $opt in
     c)
         serviceName=${OPTARG}
@@ -18,6 +19,10 @@ while getopts "e:c:i:" opt; do
     i)
         interactive=true
         shift $((OPTIND - 2))
+        ;;
+    u)
+        user=${OPTARG}
+        shift $((OPTIND - 1))
         ;;
     esac
 done
@@ -35,9 +40,9 @@ if ${injecting}; then
     fi
     echo "Injecting into ${service}..."
     if ${interactive}; then
-      docker exec -i ${service} "$@"
+      docker exec -u ${user} -i ${service} "$@"
     else
-      docker exec ${service} "$@"
+      docker exec -u ${user} ${service} "$@"
     fi
 else
     if [ -z "$container" ]; then
