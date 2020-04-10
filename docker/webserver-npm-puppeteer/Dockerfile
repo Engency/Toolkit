@@ -62,6 +62,54 @@ RUN
 
 ####################################
 #                                  #
+#              Node                #
+#                                  #
+#     Install nvm / npm / node     #
+#     node version: 10.16.0        #
+#     nvm version: 0.34.0          #
+#     npm version: 6.9.0           #
+#                                  #
+####################################
+
+# nvm environment variables
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 10.16.0
+ENV NVM_VERSION 0.34.0
+
+# install nvm, node and npm
+RUN mkdir $NVM_DIR \
+     && curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v$NVM_VERSION/install.sh | bash \
+     && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION  && nvm use default"
+
+# add node and npm to path so the commands are available
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# set timezone
+ARG TZ="Europe/Amsterdam"
+RUN ln -sfn /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
+RUN echo "date.timezone=$TZ" > /usr/local/etc/php/conf.d/datetime.ini
+
+COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
+
+####################################
+#                                  #
+#    Install headless Chrome       #
+#                                  #
+####################################
+
+RUN apt install -y gnupg wget
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-unstable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
+      --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN  usermod -G audio,video www-data
+
+####################################
+#                                  #
 #       Engency Toolkit            #
 #                                  #
 ####################################
