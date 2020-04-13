@@ -65,8 +65,7 @@ RUN pecl install xdebug \
 ENV COMPOSER_HOME /tmp
 ENV COMPOSER_VERSION 1.9.3
 
-RUN
-        curl --silent --fail --location --retry 3 --output /tmp/installer.php --url https://raw.githubusercontent.com/composer/getcomposer.org/cb19f2aa3aeaa2006c0cd69a7ef011eb31463067/web/installer \
+RUN curl --silent --fail --location --retry 3 --output /tmp/installer.php --url https://raw.githubusercontent.com/composer/getcomposer.org/cb19f2aa3aeaa2006c0cd69a7ef011eb31463067/web/installer \
      && php -r " \
         \$signature = '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5'; \
         \$hash = hash('sha384', file_get_contents('/tmp/installer.php')); \
@@ -110,20 +109,5 @@ RUN ln -sfn /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezo
 RUN echo "date.timezone=$TZ" > /usr/local/etc/php/conf.d/datetime.ini
 
 COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
-
-####################################
-#                                  #
-#       Engency Toolkit            #
-#                                  #
-####################################
-
-# authorize SSH Host
-RUN mkdir -p /root/.ssh && \
-    chmod 0700 /root/.ssh && \
-    ssh-keyscan github.com > /root/.ssh/known_hosts
-
-COPY keys/* /root/.ssh/
-
-RUN chmod 600 /root/.ssh/id_rsa*
 
 CMD ["scripts/startup.sh"]
