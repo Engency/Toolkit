@@ -41,7 +41,7 @@ trait ModelRelations
      * @param string|null $foreignKey
      * @param string|null $localKey
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne|\Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
@@ -63,7 +63,7 @@ trait ModelRelations
      * @param string|null $foreignKey
      * @param string|null $localKey
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function hasMany($related, $foreignKey = null, $localKey = null)
     {
@@ -86,7 +86,7 @@ trait ModelRelations
      * @param string|null $ownerKey
      * @param string|null $relation
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|\Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)
     {
