@@ -16,7 +16,7 @@
       "homepage": "https://www.engency.com"
     }
   ],
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "bin": [
     "bin/docker_inject",
     "bin/install_commands",
@@ -26,11 +26,11 @@
   "require": {
     "php": "^7.4",
     "ext-json": "*",
-    "laravel/framework": "6.*",
-    "illuminate/container": "^6.0",
-    "illuminate/contracts": "^6.0",
-    "illuminate/support": "^6.0",
-    "symfony/http-foundation": "^4.3.4",
+    "laravel/framework": "7.*",
+    "illuminate/container": "^7.0",
+    "illuminate/contracts": "^7.0",
+    "illuminate/support": "^7.0",
+    "symfony/http-foundation": "^5.0",
     "ext-tidy": "*"
   },
   "require-dev": {},

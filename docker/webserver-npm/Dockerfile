@@ -44,11 +44,11 @@ RUN buildDeps=" \
 ####################################
 
 ENV COMPOSER_HOME /tmp
-ENV COMPOSER_VERSION 1.9.3
+ENV COMPOSER_VERSION 1.10.5
 
-RUN curl --silent --fail --location --retry 3 --output /tmp/installer.php --url https://raw.githubusercontent.com/composer/getcomposer.org/cb19f2aa3aeaa2006c0cd69a7ef011eb31463067/web/installer \
+RUN curl --silent --fail --location --retry 3 --output /tmp/installer.php --url https://raw.githubusercontent.com/composer/getcomposer.org/a5874d7ceecca18772d44ed19e7da5fd267ba0a4/web/installer \
      && php -r " \
-        \$signature = '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5'; \
+        \$signature = 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a'; \
         \$hash = hash('sha384', file_get_contents('/tmp/installer.php')); \
         if (!hash_equals(\$signature, \$hash)) { \
             unlink('/tmp/installer.php'); \
@@ -84,11 +84,16 @@ RUN mkdir $NVM_DIR \
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-# set timezone
+####################################
+#                                  #
+#            Timezone              #
+#                                  #
+####################################
+
 ARG TZ="Europe/Amsterdam"
 RUN ln -sfn /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 RUN echo "date.timezone=$TZ" > /usr/local/etc/php/conf.d/datetime.ini
 
-COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
+COPY ../virtualserver.conf /etc/apache2/sites-available/000-default.conf
 
-CMD ["scripts/startup.sh"]
+CMD ["/usr/sbin/apache2ctl", "-e", "info", "-D", "FOREGROUND"]
