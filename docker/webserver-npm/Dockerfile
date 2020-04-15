@@ -16,17 +16,16 @@ RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/ap
 
 # install gd
 RUN buildDeps=" \
-        mariadb-client \
-		libfreetype6-dev \
-		libjpeg-dev \
+        libfreetype6-dev \
+        libjpeg-dev \
         libwebp-dev \
         libjpeg62-turbo-dev \
         libxpm-dev \
-		libldap2-dev \
-		libmcrypt-dev \
-		libpng-dev \
-		zlib1g-dev \
-		libzip-dev \
+        libldap2-dev \
+        libmcrypt-dev \
+        libpng-dev \
+        zlib1g-dev \
+        libzip-dev \
         libtidy-dev \
         libssl-dev \
 	"; \
@@ -94,6 +93,6 @@ ARG TZ="Europe/Amsterdam"
 RUN ln -sfn /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 RUN echo "date.timezone=$TZ" > /usr/local/etc/php/conf.d/datetime.ini
 
-COPY ../virtualserver.conf /etc/apache2/sites-available/000-default.conf
+COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
 
 CMD ["/usr/sbin/apache2ctl", "-e", "info", "-D", "FOREGROUND"]

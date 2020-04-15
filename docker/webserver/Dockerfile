@@ -16,17 +16,16 @@ RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/ap
 
 # install gd
 RUN buildDeps=" \
-        mariadb-client \
-		libfreetype6-dev \
-		libjpeg-dev \
+        libfreetype6-dev \
+        libjpeg-dev \
         libwebp-dev \
         libjpeg62-turbo-dev \
         libxpm-dev \
-		libldap2-dev \
-		libmcrypt-dev \
-		libpng-dev \
-		zlib1g-dev \
-		libzip-dev \
+        libldap2-dev \
+        libmcrypt-dev \
+        libpng-dev \
+        zlib1g-dev \
+        libzip-dev \
         libtidy-dev \
         libssl-dev \
 	"; \
