@@ -5,14 +5,16 @@ ENV PATH /var/www/html:$PATH
 
 RUN echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 
+# Apache configuration
+RUN a2enmod rewrite
+COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
+
 RUN apt-get update \
         && apt-get install -y openssh-server ssh zlib1g-dev libzip-dev unzip sqlite3 libsqlite3-dev git \
         zlib1g-dev libzip-dev libssl-dev libmcrypt-dev --no-install-recommends \
         && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip
 
 RUN  echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_configs
-
-RUN a2enmod rewrite
 
 # install APCu
 RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
@@ -79,7 +81,7 @@ ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="0" \
     PHP_OPCACHE_MEMORY_CONSUMPTION="256" \
     PHP_OPCACHE_MAX_WASTED_PERCENTAGE="10"
 
-RUN apt-get install -y opcache
+RUN docker-php-ext-install opcache
 
 ####################################
 #                                  #
