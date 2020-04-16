@@ -22,4 +22,6 @@ All images include;
 |---|---|---|---|
 |TZ|*|Timezone|Europe/Amsterdam|
 |PHP_OPCACHE_VALIDATE_TIMESTAMPS|^(?!debug).*|Whether opcache should validate timestamps.|0|
-|XDEBUG_TRIGGER|^debug.*|Setting the xdebug.profiler_enable_trigger_value value.|0|
+|XDEBUG_TRIGGER|^debug.*|Setting the xdebug.profiler_enable_trigger_value value.|salkdn9e4s8thasd3uslf|
+|XDEBUG_CONFIG|^debug.*|Add values to xdebug configuration.|remote_host=172.17.0.1|
+|PHP_IDE_CONFIG|^debug.*|Custom configuration for use with IDEs. For instance, name the service so that phpstorm will recognise it in a debugging session.|serverName=webserver|

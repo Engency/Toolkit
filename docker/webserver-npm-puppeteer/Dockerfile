@@ -21,15 +21,15 @@ RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/ap
 
 # install gd
 RUN buildDeps=" \
-		libfreetype6-dev \
-		libjpeg-dev \
+        libfreetype6-dev \
+        libjpeg-dev \
         libwebp-dev \
         libjpeg62-turbo-dev \
         libxpm-dev \
-		libpng-dev \
-	"; \
-	set -x \
-	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends \
+        libpng-dev \
+    "; \
+    set -x \
+    && apt-get update && apt-get install -y $buildDeps --no-install-recommends \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
