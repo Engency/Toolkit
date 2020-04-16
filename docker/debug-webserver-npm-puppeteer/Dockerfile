@@ -121,6 +121,4 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 
 RUN  usermod -G audio,video www-data
 
-COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
-
 CMD ["/usr/sbin/apache2ctl", "-e", "info", "-D", "FOREGROUND"]

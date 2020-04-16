@@ -83,6 +83,4 @@ ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="0" \
 
 RUN docker-php-ext-install opcache
 
-COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
-
 CMD ["/usr/sbin/apache2ctl", "-e", "info", "-D", "FOREGROUND"]
