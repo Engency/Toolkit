@@ -10,11 +10,12 @@ RUN a2enmod rewrite
 COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
 
 RUN apt-get update \
-        && apt-get install -y openssh-server ssh zlib1g-dev libzip-dev unzip sqlite3 libsqlite3-dev git \
+        && apt-get install -y openssh-server ssh zlib1g-dev libzip-dev unzip sqlite3 libsqlite3-dev git-core \
         zlib1g-dev libzip-dev libssl-dev libmcrypt-dev --no-install-recommends \
         && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip
 
 RUN  echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_configs
+RUN eval "$(ssh-agent -s)" && mkdir ~/.ssh && ssh-keyscan github.com >~/.ssh/known_hosts
 
 # install APCu
 RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
