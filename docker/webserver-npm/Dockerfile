@@ -14,8 +14,8 @@ RUN apt-get update \
         zlib1g-dev libzip-dev libssl-dev libmcrypt-dev --no-install-recommends \
         && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip
 
-RUN  echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_configs
-RUN eval "$(ssh-agent -s)" && mkdir ~/.ssh && ssh-keyscan github.com >~/.ssh/known_hosts
+RUN echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_config
+RUN mkdir ~/.ssh && ssh-keyscan github.com >~/.ssh/known_hosts
 
 # install APCu
 RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
