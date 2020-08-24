@@ -24,6 +24,7 @@ while getopts "e:c:i:u:" opt; do
         user=${OPTARG}
         shift $((OPTIND - 1))
         ;;
+    *)  ;;
     esac
 done
 
