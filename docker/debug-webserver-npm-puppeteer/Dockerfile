@@ -1,4 +1,4 @@
-FROM php:7.4.0-apache
+FROM php:8.0.0RC3-apache
 
 WORKDIR /var/www/html
 ENV PATH /var/www/html:$PATH
@@ -11,14 +11,17 @@ COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
 
 RUN apt-get update \
         && apt-get install -y openssh-server ssh zlib1g-dev libzip-dev unzip sqlite3 libsqlite3-dev git-core \
-        zlib1g-dev libzip-dev libssl-dev libmcrypt-dev --no-install-recommends \
+        zlib1g-dev libzip-dev libssl-dev libmcrypt-dev wget --no-install-recommends \
         && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip
 
 RUN echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_config
 RUN mkdir ~/.ssh && ssh-keyscan github.com >~/.ssh/known_hosts
 
+# Install pickle
+RUN wget https://github.com/FriendsOfPHP/pickle/releases/download/v0.6.0/pickle.phar && mv pickle.phar /usr/local/bin/pickle && chmod u+x /usr/local/bin/pickle
+
 # install APCu
-RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
+RUN pickle install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
 
 # install gd
 RUN buildDeps=" \
@@ -75,13 +78,24 @@ RUN echo "date.timezone=$TZ" > /usr/local/etc/php/conf.d/datetime.ini
 #                                  #
 ####################################
 
+ARG XDEBUG_VERSION="master"
 ARG XDEBUG_TRIGGER="salkdn9e4s8thasd3uslf"
 ARG XDEBUG_CONFIG="remote_host=172.17.0.1"
 ARG PHP_IDE_CONFIG="serverName=webserver"
 
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-RUN pecl install xdebug \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> /usr/local/etc/php/conf.d/xdebug.ini
+
+# install xdebug 3.0
+RUN mkdir /opt/php-libs && cd /opt/php-libs \
+    && wget https://github.com/xdebug/xdebug/archive/$XDEBUG_VERSION.tar.gz \
+    && mkdir xdebug && tar -zxC ./xdebug -f $XDEBUG_VERSION.tar.gz --strip-components 1 \
+    && rm  $XDEBUG_VERSION.tar.gz
+
+# the last working commit, because the php-src is not up to date yet in this alpine
+RUN cd /opt/php-libs/xdebug \
+    && phpize \
+    && ./configure --enable-xdebug-dev \
+    && make all
 
 ####################################
 #                                  #

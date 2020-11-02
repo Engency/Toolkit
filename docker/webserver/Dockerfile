@@ -1,4 +1,4 @@
-FROM php:7.4.0-apache
+FROM php:8.0.0RC3-apache
 
 WORKDIR /var/www/html
 ENV PATH /var/www/html:$PATH
@@ -11,14 +11,17 @@ COPY virtualserver.conf /etc/apache2/sites-available/000-default.conf
 
 RUN apt-get update \
         && apt-get install -y openssh-server ssh zlib1g-dev libzip-dev unzip sqlite3 libsqlite3-dev git-core \
-        zlib1g-dev libzip-dev libssl-dev libmcrypt-dev --no-install-recommends \
+        zlib1g-dev libzip-dev libssl-dev libmcrypt-dev wget --no-install-recommends \
         && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip
 
 RUN echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_config
 RUN mkdir ~/.ssh && ssh-keyscan github.com >~/.ssh/known_hosts
 
+# Install pickle
+RUN wget https://github.com/FriendsOfPHP/pickle/releases/download/v0.6.0/pickle.phar && mv pickle.phar /usr/local/bin/pickle && chmod u+x /usr/local/bin/pickle
+
 # install APCu
-RUN pecl install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
+RUN pickle install apcu && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
 
 # install gd
 RUN buildDeps=" \
